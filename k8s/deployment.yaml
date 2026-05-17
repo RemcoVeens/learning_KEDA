@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-worker
+  template:
+    metadata:
+      labels:
+        app: redis-worker
+    spec:
+      containers:
+        - name: worker
+          image: keda-worker:v1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: REDIS_HOST
+              value: redis-master:6379
