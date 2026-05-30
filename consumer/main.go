@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"keda/internal/redis_client"
+	"math/rand"
 	"time"
 
 	"github.com/go-redis/redis"
@@ -12,7 +13,7 @@ func main() {
 	rdb := redis_client.GetRDB()
 	defer rdb.Close()
 	for {
-		messages, err := rdb.BLPop(1*time.Second, redis_client.QueueName).Result()
+		messages, err := rdb.BLPop(redis_client.Ctx, 1*time.Second, redis_client.QueueName).Result()
 
 		if err != nil {
 			if err == redis.Nil {
@@ -31,7 +32,9 @@ func main() {
 			fmt.Printf("Received message from %s: %s\n", queueName, messageContent)
 
 			// Simulate processing work by sleeping for 1 second
-			time.Sleep(1 * time.Second)
+			completion_message := fmt.Sprintf("Completed processing: %s", messageContent)
+			rdb.RPush(redis_client.Ctx, redis_client.CompletionQueueName, completion_message)
+			time.Sleep(time.Duration(rand.Intn(5)) * time.Second)
 		} else {
 			// This case should ideally not happen for a successful BLPop result,
 			// but it's a good practice to handle unexpected formats.

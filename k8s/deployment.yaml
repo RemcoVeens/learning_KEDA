@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: redis-worker
+  name: queue-prosessor
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: redis-worker
+      app: queue-prosessor
   template:
     metadata:
       labels:
-        app: redis-worker
+        app: queue-prosessor
     spec:
       containers:
         - name: worker

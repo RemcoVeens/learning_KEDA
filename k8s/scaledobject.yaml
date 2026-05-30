@@ -1,13 +1,13 @@
 apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
 metadata:
-  name: redis-worker-scaledobject
+  name: queue-prosessor-scaledobject
   namespace: default
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: redis-worker # Must match your Deployment name
+    name: queue-prosessor # Must match your Deployment name
   minReplicaCount: 0 # Scale down to zero when no jobs exist!
   maxReplicaCount: 10 # Don't blow up your machine
   cooldownPeriod: 30 # How long to wait before scaling down after queue is empty
