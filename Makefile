@@ -19,3 +19,4 @@ update_consumer:
 	docker build -t keda-worker:v1 .
 	kubectl apply -f k8s/scaledobject.yaml
 	kubectl apply -f k8s/deployment.yaml
+	rm msg_consumer

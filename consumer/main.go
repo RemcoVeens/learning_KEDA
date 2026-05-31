@@ -1,19 +1,20 @@
 package main
 
 import (
+	"crypto/rand"
 	"fmt"
 	"keda/internal/redis_client"
-	"math/rand"
+	"math/big"
 	"time"
 
-	"github.com/go-redis/redis"
+	"github.com/redis/go-redis/v9"
 )
 
 func main() {
 	rdb := redis_client.GetRDB()
 	defer rdb.Close()
 	for {
-		messages, err := rdb.BLPop(redis_client.Ctx, 1*time.Second, redis_client.QueueName).Result()
+		messages, err := rdb.BRPop(redis_client.Ctx, 1*time.Second, redis_client.QueueName).Result()
 
 		if err != nil {
 			if err == redis.Nil {
@@ -31,10 +32,14 @@ func main() {
 			messageContent := messages[1]
 			fmt.Printf("Received message from %s: %s\n", queueName, messageContent)
 
-			// Simulate processing work by sleeping for 1 second
 			completion_message := fmt.Sprintf("Completed processing: %s", messageContent)
 			rdb.RPush(redis_client.Ctx, redis_client.CompletionQueueName, completion_message)
-			time.Sleep(time.Duration(rand.Intn(5)) * time.Second)
+			randomNumber, err := rand.Int(rand.Reader, big.NewInt(5))
+			if err != nil {
+				fmt.Printf("Error generating random number: %v\n", err)
+				continue
+			}
+			time.Sleep(time.Duration(randomNumber.Int64()) * time.Second)
 		} else {
 			// This case should ideally not happen for a successful BLPop result,
 			// but it's a good practice to handle unexpected formats.

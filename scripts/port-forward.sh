@@ -1,0 +1,3 @@
+#!/bin/bash
+
+kubectl port-forward svc/redis-master 6379:6379 &

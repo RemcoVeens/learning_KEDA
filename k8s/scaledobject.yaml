@@ -10,7 +10,7 @@ spec:
     name: queue-prosessor # Must match your Deployment name
   minReplicaCount: 0 # Scale down to zero when no jobs exist!
   maxReplicaCount: 10 # Don't blow up your machine
-  cooldownPeriod: 30 # How long to wait before scaling down after queue is empty
+  cooldownPeriod: 0 # How long to wait before scaling down after queue is empty
   triggers:
     - type: redis
       metadata:

@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"sync"
 
 	"github.com/redis/go-redis/v9"
 )
@@ -12,9 +11,7 @@ import (
 var QueueName = "job-queue"
 var CompletionQueueName = "completion-queue"
 var (
-	Ctx  = context.Background()
-	rdb  *redis.Client
-	once sync.Once
+	Ctx = context.Background()
 )
 
 func GetRDB() *redis.Client {
